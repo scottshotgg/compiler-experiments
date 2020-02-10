@@ -82,6 +82,7 @@ func NewFromBytes(source []byte) *SimpleLexer {
 
 // NewFromBytes is a simple helper function to provide a lexer from a string
 func NewFromString(source string) *SimpleLexer {
+	fmt.Println("hi2")
 	return New(bufio.NewReader(bytes.NewBufferString(source)))
 }
 
@@ -89,7 +90,9 @@ func NewFromFile(f *os.File) *SimpleLexer {
 	return New(bufio.NewReader(f))
 }
 
-func NewFromFolder(path string)
+func NewFromFolder(path string) (*SimpleLexer, error) {
+	return nil, errors.New("not implemented")
+}
 
 // NewFromPath is a simple helper function to provide a lexer from a provided path
 func NewFromPath(path string, prefetchContents bool) (*SimpleLexer, error) {
@@ -156,6 +159,9 @@ func (l *SimpleLexer) Print() {
 func (l *SimpleLexer) readAllRunes() error {
 	for {
 		var r, _, err = l.r.ReadRune()
+		fmt.Println("err", err)
+		fmt.Println("r", string(r))
+
 		switch err {
 		case nil:
 			l.source = append(l.source, r)
@@ -163,7 +169,7 @@ func (l *SimpleLexer) readAllRunes() error {
 			continue
 
 		case io.EOF:
-			break
+			return nil
 
 		default:
 			return err
@@ -174,17 +180,23 @@ func (l *SimpleLexer) readAllRunes() error {
 // Tokenize is the primary function used to lex the source into tokens
 func (l *SimpleLexer) Tokenize() error {
 	// TODO: convert this to use a Reader instead
-	// For now just read the entire thing into source to start
+	// TODO: in order to do that, this needs to be drastically simplified
+
+	// FOR NOW just read the entire thing into source to start
 	var err = l.readAllRunes()
 	if err != nil {
 		return err
 	}
 
-	for index := 0; index < len(l.source); index++ {
-		var char = string(l.source[index])
+	fmt.Println("source:", l.Source())
 
-		// Else see if it's recognized lexeme
-		var lexemeToken, ok = token.TokenMap[char]
+	for index := 0; index < len(l.source); index++ {
+		var (
+			char = string(l.source[index])
+
+			// Else see if it's recognized lexeme
+			lexemeToken, ok = token.TokenMap[char]
+		)
 
 		// // Only the operators are allowed to be without spaces after them; this may change, kinda hate no spaces between the symbols
 		// // Also enclosers (rbrace, lbrace, etc) are allowed as well. End tokens (; and ,) as well
