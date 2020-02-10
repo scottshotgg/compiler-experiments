@@ -10,7 +10,7 @@ func TestTokenize(t *testing.T) {
 	var (
 		test = "hi my name is scott"
 
-		l = lexer.NewSimpleFromString(test)
+		l = lexer.NewFromString(test)
 
 		err = l.Tokenize()
 	)
@@ -19,5 +19,5 @@ func TestTokenize(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	l.PrintLexemes()
+	l.Print()
 }
