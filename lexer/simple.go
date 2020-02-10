@@ -82,7 +82,6 @@ func NewFromBytes(source []byte) *SimpleLexer {
 
 // NewFromBytes is a simple helper function to provide a lexer from a string
 func NewFromString(source string) *SimpleLexer {
-	fmt.Println("hi2")
 	return New(bufio.NewReader(bytes.NewBufferString(source)))
 }
 
@@ -159,8 +158,6 @@ func (l *SimpleLexer) Print() {
 func (l *SimpleLexer) readAllRunes() error {
 	for {
 		var r, _, err = l.r.ReadRune()
-		fmt.Println("err", err)
-		fmt.Println("r", string(r))
 
 		switch err {
 		case nil:
